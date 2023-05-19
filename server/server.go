@@ -4,31 +4,30 @@ import (
 	"fmt"
 	"net"
 	"os"
+
+	"github.com/omarabdul3ziz/resper/pkg/handlers"
+	"github.com/omarabdul3ziz/resper/pkg/ioutils"
 )
 
 const (
 	port = 8888
 )
 
-func readConnection(conn net.Conn) {
+func handleServerConnection(conn net.Conn) {
 	defer conn.Close()
-	for {
-		msg := make([]byte, 1024)
-		_, err := conn.Read(msg)
-		if err != nil {
-			fmt.Println("Error reading: ", err.Error())
-			return
-		}
-		handleRequest(string(msg))
-	}
-}
 
-func handleRequest(msg string) {
-	fmt.Print("< ", msg)
+	for {
+		msg := ioutils.Read(conn)
+
+		res := handlers.Handle(msg)
+
+		ioutils.Write(conn, res)
+	}
 }
 
 func main() {
 	fmt.Println("Opened server on port: ", port)
+
 	listener, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", port))
 	if err != nil {
 		fmt.Println("Error listening: ", err.Error())
@@ -42,7 +41,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		go readConnection(conn)
+		go handleServerConnection(conn)
 	}
 
 }
