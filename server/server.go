@@ -5,7 +5,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/omarabdul3ziz/resper/pkg/handlers"
+	"github.com/omarabdul3ziz/resper/pkg/codec"
 	"github.com/omarabdul3ziz/resper/pkg/ioutils"
 )
 
@@ -18,10 +18,17 @@ func handleServerConnection(conn net.Conn) {
 
 	for {
 		msg := ioutils.Read(conn)
+		fmt.Println("Request: ", msg)
 
-		res := handlers.Handle(msg)
+		// Decode
+		msg_ := codec.Decode(msg)
+		fmt.Println("Decoded: ", msg_)
 
-		ioutils.Write(conn, res)
+		// res := handlers.Handle(msg)
+		// fmt.Println("Response: ", res)
+
+		// ioutils.Write(conn, res)
+		// fmt.Print(msg)
 	}
 }
 

@@ -4,7 +4,7 @@ Is a server/client project that communicate over tcp socket with resp as the com
 
 What expected to be learnt from this project?
 - Natively dealing with sockets over tcp.
-- Handling reading/writing over streams buffers.
+- Handling reading/writing over bytes stream.
 - Handling strings buy Encoding/Decoding messages.
 
 

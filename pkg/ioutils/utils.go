@@ -5,10 +5,17 @@ import (
 	"net"
 	"os"
 	"strings"
+	"unicode"
 )
 
+func trimSpacesOnly(s string) string {
+	return strings.TrimFunc(s, func(r rune) bool {
+		return unicode.IsSpace(r) && r != ' '
+	})
+}
+
 func Write(conn net.Conn, msg string) {
-	res := strings.TrimSpace(msg)
+	res := trimSpacesOnly(msg)
 
 	response := []byte(res)
 	_, err := conn.Write(response)
@@ -27,5 +34,5 @@ func Read(conn net.Conn) string {
 		return ""
 	}
 
-	return strings.TrimSpace(string(buffer[:len]))
+	return trimSpacesOnly(string(buffer[:len]))
 }
